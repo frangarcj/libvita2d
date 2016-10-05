@@ -175,8 +175,8 @@ void vita2d_texture_set_filters(vita2d_texture *texture, SceGxmTextureFilter min
 
 static inline void set_texture_program()
 {
-	sceGxmSetVertexProgram(_vita2d_context, _vita2d_textureVertexProgram);
-	sceGxmSetFragmentProgram(_vita2d_context, _vita2d_textureFragmentProgram);
+	sceGxmSetVertexProgram(_vita2d_context, _vita2d_selectedTexVertexProgram);
+	sceGxmSetFragmentProgram(_vita2d_context, _vita2d_selectedTexFragmentProgram);
 }
 
 static inline void set_texture_tint_program()
@@ -185,11 +185,20 @@ static inline void set_texture_tint_program()
 	sceGxmSetFragmentProgram(_vita2d_context, _vita2d_textureTintFragmentProgram);
 }
 
+void vita2d_texture_set_program(SceGxmVertexProgram *vertexProgram, SceGxmFragmentProgram *fragmentProgram){
+	_vita2d_selectedTexVertexProgram = vertexProgram;
+	_vita2d_selectedTexFragmentProgram = fragmentProgram;
+}
+
+void vita2d_texture_set_wvp(SceGxmProgramParameter *wvpParam){
+	_vita2d_selectedTexWvpParam = wvpParam;
+}
+
 static inline void set_texture_wvp_uniform()
 {
 	void *vertex_wvp_buffer;
 	sceGxmReserveVertexDefaultUniformBuffer(_vita2d_context, &vertex_wvp_buffer);
-	sceGxmSetUniformDataF(vertex_wvp_buffer, _vita2d_textureWvpParam, 0, 16, _vita2d_ortho_matrix);
+	sceGxmSetUniformDataF(vertex_wvp_buffer, _vita2d_selectedTexWvpParam, 0, 16, _vita2d_ortho_matrix);
 }
 
 static inline void set_texture_tint_color_uniform(unsigned int color)
@@ -746,4 +755,3 @@ void vita2d_draw_texture_part_tint_scale_rotate(const vita2d_texture *texture, f
 	draw_texture_part_scale_rotate_generic(texture, x, y,
 		tex_x, tex_y, tex_w, tex_h, x_scale, y_scale, rad);
 }
-
