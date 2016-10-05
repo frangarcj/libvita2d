@@ -10,6 +10,8 @@
 #include <psp2/kernel/processmgr.h>
 
 #include <vita2d.h>
+#include "includes/lcd3x_v.h"
+#include "includes/lcd3x_f.h"
 
 /*
  * Symbol of the image.png file
@@ -24,6 +26,12 @@ int main()
 	float rad = 0.0f;
 
 	vita2d_init();
+
+	vita2d_shader* lcd3x_shader = vita2d_create_shader((SceGxmProgram*) lcd3x_v, (SceGxmProgram*) lcd3x_f);
+
+	vita2d_texture_set_program(lcd3x_shader->vertexProgram, lcd3x_shader->fragmentProgram);
+	vita2d_texture_set_wvp(lcd3x_shader->wvpParam);
+
 	vita2d_set_clear_color(RGBA8(0x40, 0x40, 0x40, 0xFF));
 
 	pgf = vita2d_load_default_pgf();
@@ -65,6 +73,8 @@ int main()
 	 * then we can free the assets freely.
 	 */
 	vita2d_fini();
+
+	vita2d_free_shader(lcd3x_shader);
 	vita2d_free_texture(image);
 	vita2d_free_pgf(pgf);
 
