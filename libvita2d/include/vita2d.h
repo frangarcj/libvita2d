@@ -46,6 +46,7 @@ typedef struct vita2d_shader {
   SceGxmProgramParameter * paramPositionAttribute;
   SceGxmProgramParameter * paramTexcoordAttribute;
   SceGxmProgramParameter * wvpParam;
+	SceGxmProgramParameter * texSizeParam;
 } vita2d_shader;
 
 typedef struct vita2d_system_pgf_config {
@@ -153,6 +154,7 @@ int vita2d_pgf_text_height(vita2d_pgf *font, float scale, const char *text);
 vita2d_shader *vita2d_create_shader(const SceGxmProgram* vertexProgramGxp, const SceGxmProgram* fragmentProgramGxp);
 void vita2d_texture_set_program(SceGxmVertexProgram *vertexProgram, SceGxmFragmentProgram *fragmentProgram);
 void vita2d_texture_set_wvp(SceGxmProgramParameter *wvpParam);
+void vita2d_texture_set_texSize(SceGxmProgramParameter *texParam);
 void vita2d_free_shader(vita2d_shader *shader);
 
 #ifdef __cplusplus

@@ -11,7 +11,7 @@
 
 #ifdef DEBUG_BUILD
 #  include <stdio.h>
-#  define DEBUG(...) printf(__VA_ARGS__)
+#  define DEBUG(...) sceClibPrintf(__VA_ARGS__)
 #else
 #  define DEBUG(...)
 #endif
@@ -114,6 +114,7 @@ const SceGxmProgramParameter *_vita2d_textureTintColorParam = NULL;
 SceGxmVertexProgram * _vita2d_selectedTexVertexProgram = NULL;
 SceGxmFragmentProgram * _vita2d_selectedTexFragmentProgram = NULL;
 SceGxmProgramParameter *_vita2d_selectedTexWvpParam = NULL;
+SceGxmProgramParameter *_vita2d_selectedTexSizeParam = NULL;
 
 // Temporary memory pool
 static void *pool_addr = NULL;
@@ -900,6 +901,8 @@ vita2d_shader *vita2d_create_shader(const SceGxmProgram* vertexProgramGxp, const
 	shader->wvpParam = sceGxmProgramFindParameterByName(vertexProgramGxp, "wvp");
 	DEBUG("texture wvp sceGxmProgramFindParameterByName(): %p\n", shader->wvpParam);
 
+	shader->texSizeParam = sceGxmProgramFindParameterByName(vertexProgramGxp, "texture_size");
+	DEBUG("texture size sceGxmProgramFindParameterByName(): %p\n", shader->texSizeParam);
 	return shader;
 }
 
