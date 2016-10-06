@@ -17,5 +17,6 @@ extern SceGxmVertexProgram * _vita2d_selectedTexVertexProgram;
 extern SceGxmFragmentProgram * _vita2d_selectedTexFragmentProgram;
 extern SceGxmProgramParameter *_vita2d_selectedTexWvpParam;
 extern SceGxmProgramParameter *_vita2d_selectedTexSizeParam;
+extern SceGxmProgramParameter *_vita2d_selectedTexSizeFParam;
 
 #endif

@@ -115,6 +115,7 @@ SceGxmVertexProgram * _vita2d_selectedTexVertexProgram = NULL;
 SceGxmFragmentProgram * _vita2d_selectedTexFragmentProgram = NULL;
 SceGxmProgramParameter *_vita2d_selectedTexWvpParam = NULL;
 SceGxmProgramParameter *_vita2d_selectedTexSizeParam = NULL;
+SceGxmProgramParameter *_vita2d_selectedTexSizeFParam = NULL;
 
 // Temporary memory pool
 static void *pool_addr = NULL;
@@ -903,6 +904,9 @@ vita2d_shader *vita2d_create_shader(const SceGxmProgram* vertexProgramGxp, const
 
 	shader->texSizeParam = sceGxmProgramFindParameterByName(vertexProgramGxp, "texture_size");
 	DEBUG("texture size sceGxmProgramFindParameterByName(): %p\n", shader->texSizeParam);
+	
+	shader->texSizeFParam = sceGxmProgramFindParameterByName(fragmentProgramGxp, "texture_size");
+	DEBUG("texture size sceGxmProgramFindParameterByName(): %p\n", shader->texSizeFParam);
 	return shader;
 }
 

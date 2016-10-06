@@ -14,6 +14,8 @@
 #include "includes/lcd3x_f.h"
 #include "includes/texture_v.h"
 #include "includes/bicubic_f.h"
+#include "includes/xbr_2x_v.h"
+#include "includes/xbr_2x_f.h"
 
 
 /*
@@ -34,6 +36,7 @@ int main()
 
 	vita2d_shader* lcd3x_shader = vita2d_create_shader((SceGxmProgram*) lcd3x_v, (SceGxmProgram*) lcd3x_f);
 	vita2d_shader* bicubic_shader = vita2d_create_shader((SceGxmProgram*) texture_v, (SceGxmProgram*) bicubic_f);
+	vita2d_shader* xbr = vita2d_create_shader((SceGxmProgram*) xbr_2x_v, (SceGxmProgram*) xbr_2x_f);
 
 
 	
@@ -57,10 +60,17 @@ int main()
 			vita2d_texture_set_program(lcd3x_shader->vertexProgram, lcd3x_shader->fragmentProgram);
 			vita2d_texture_set_wvp(lcd3x_shader->wvpParam);
 			vita2d_texture_set_texSize(lcd3x_shader->texSizeParam);
+			vita2d_texture_set_texSizeF(NULL);
 		} else if(pad.buttons & SCE_CTRL_SQUARE){
 			vita2d_texture_set_program(bicubic_shader->vertexProgram, bicubic_shader->fragmentProgram);
 			vita2d_texture_set_wvp(bicubic_shader->wvpParam);
 			vita2d_texture_set_texSize(bicubic_shader->texSizeParam);
+			vita2d_texture_set_texSizeF(NULL);
+		} else if(pad.buttons & SCE_CTRL_CIRCLE){
+			vita2d_texture_set_program(xbr->vertexProgram, xbr->fragmentProgram);
+			vita2d_texture_set_wvp(xbr->wvpParam);
+			vita2d_texture_set_texSize(xbr->texSizeParam);
+			vita2d_texture_set_texSizeF(xbr->texSizeFParam);
 		} else if(pad.buttons & SCE_CTRL_SELECT){
 			break;
 		}
