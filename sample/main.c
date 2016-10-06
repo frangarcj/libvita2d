@@ -16,6 +16,8 @@
 #include "includes/bicubic_f.h"
 #include "includes/xbr_2x_v.h"
 #include "includes/xbr_2x_f.h"
+#include "includes/xbr_2x_fast_v.h"
+#include "includes/xbr_2x_fast_f.h"
 
 
 /*
@@ -28,7 +30,6 @@ extern const SceGxmProgram texture_v_gxp_start;
 int main()
 {
 	SceCtrlData pad;
-	vita2d_pgf *pgf;
 	vita2d_texture *image;
 	float rad = 0.0f;
 
@@ -37,12 +38,13 @@ int main()
 	vita2d_shader* lcd3x_shader = vita2d_create_shader((SceGxmProgram*) lcd3x_v, (SceGxmProgram*) lcd3x_f);
 	vita2d_shader* bicubic_shader = vita2d_create_shader((SceGxmProgram*) texture_v, (SceGxmProgram*) bicubic_f);
 	vita2d_shader* xbr = vita2d_create_shader((SceGxmProgram*) xbr_2x_v, (SceGxmProgram*) xbr_2x_f);
+	vita2d_shader* xbr_fast = vita2d_create_shader((SceGxmProgram*) xbr_2x_fast_v, (SceGxmProgram*) xbr_2x_fast_f);
+
 
 
 	
 	vita2d_set_clear_color(RGBA8(0x40, 0x40, 0x40, 0xFF));
 
-	pgf = vita2d_load_default_pgf();
 
 	/*
 	 * Load the statically compiled image.png file.
@@ -71,6 +73,11 @@ int main()
 			vita2d_texture_set_wvp(xbr->wvpParam);
 			vita2d_texture_set_texSize(xbr->texSizeParam);
 			vita2d_texture_set_texSizeF(xbr->texSizeFParam);
+		} else if(pad.buttons & SCE_CTRL_TRIANGLE){
+			vita2d_texture_set_program(xbr_fast->vertexProgram, xbr_fast->fragmentProgram);
+			vita2d_texture_set_wvp(xbr_fast->wvpParam);
+			vita2d_texture_set_texSize(xbr_fast->texSizeParam);
+			vita2d_texture_set_texSizeF(xbr_fast->texSizeFParam);
 		} else if(pad.buttons & SCE_CTRL_SELECT){
 			break;
 		}
@@ -97,7 +104,6 @@ int main()
 	vita2d_fini();
 
 	vita2d_free_texture(image);
-	vita2d_free_pgf(pgf);
 
 	sceKernelExitProcess(0);
 	return 0;
