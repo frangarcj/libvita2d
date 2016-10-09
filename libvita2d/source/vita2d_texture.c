@@ -92,6 +92,29 @@ vita2d_texture *vita2d_create_empty_texture_format(unsigned int w, unsigned int 
 		free(texture);
 		return NULL;
 	}
+	
+	// create the depth/stencil surface
+		const uint32_t alignedWidth = ALIGN(w, SCE_GXM_TILE_SIZEX);
+		const uint32_t alignedHeight = ALIGN(h, SCE_GXM_TILE_SIZEY);
+		uint32_t sampleCount = alignedWidth*alignedHeight;
+		uint32_t depthStrideInSamples = alignedWidth;
+
+		// allocate it
+		void *depthBufferData = gpu_alloc(
+			SCE_KERNEL_MEMBLOCK_TYPE_USER_RW_UNCACHE,
+			4*sampleCount,
+			SCE_GXM_DEPTHSTENCIL_SURFACE_ALIGNMENT,
+			SCE_GXM_MEMORY_ATTRIB_READ | SCE_GXM_MEMORY_ATTRIB_WRITE,
+			&texture->depth_UID);
+
+		// create the SceGxmDepthStencilSurface structure
+		err = sceGxmDepthStencilSurfaceInit(
+			&texture->gxm_sfd,
+			SCE_GXM_DEPTH_STENCIL_FORMAT_S8D24,
+			SCE_GXM_DEPTH_STENCIL_SURFACE_TILED,
+			depthStrideInSamples,
+			depthBufferData,
+			NULL);
 
 	/* Clear the texture */
 	memset(texture_data, 0, tex_size);

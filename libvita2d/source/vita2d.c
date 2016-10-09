@@ -732,17 +732,17 @@ void vita2d_swap_buffers()
 
 void vita2d_start_drawing()
 {
-	vita2d_start_drawing_advanced(NULL);
+	vita2d_start_drawing_advanced(NULL, 0);
 }
 
-void vita2d_start_drawing_advanced(vita2d_texture *target) {
+void vita2d_start_drawing_advanced(vita2d_texture *target, unsigned int flags) {
 	/* Reset the temporary memory pool */
 	vita2d_pool_reset();
 
 	if (target == NULL) {
 		sceGxmBeginScene(
 		_vita2d_context,
-		0,
+		flags,
 		renderTarget,
 		NULL,
 		NULL,
@@ -752,13 +752,13 @@ void vita2d_start_drawing_advanced(vita2d_texture *target) {
 	} else {
 		sceGxmBeginScene(
 		_vita2d_context,
-		0,
+		flags,
 		target->gxm_rtgt,
 		NULL,
 		NULL,
 		NULL,
 		&target->gxm_sfc,
-		NULL);
+		&target->gxm_sfd);
 	}
 }
 
