@@ -41,7 +41,7 @@ extern const SceGxmProgram color_f_gxp_start;
 extern const SceGxmProgram texture_v_gxp_start;
 extern const SceGxmProgram texture_f_gxp_start;
 extern const SceGxmProgram texture_tint_f_gxp_start;
-
+extern const SceGxmProgram opaque_v;
 /* Static variables */
 
 static int pgf_module_was_loaded = 0;
@@ -50,7 +50,7 @@ static const SceGxmProgram *const clearVertexProgramGxp         = &clear_v_gxp_s
 static const SceGxmProgram *const clearFragmentProgramGxp       = &clear_f_gxp_start;
 static const SceGxmProgram *const colorVertexProgramGxp         = &color_v_gxp_start;
 static const SceGxmProgram *const colorFragmentProgramGxp       = &color_f_gxp_start;
-static const SceGxmProgram *const textureVertexProgramGxp       = &texture_v_gxp_start;
+static const SceGxmProgram *const textureVertexProgramGxp       = &opaque_v;
 static const SceGxmProgram *const textureFragmentProgramGxp     = &texture_f_gxp_start;
 static const SceGxmProgram *const textureTintFragmentProgramGxp = &texture_tint_f_gxp_start;
 
@@ -114,8 +114,8 @@ const SceGxmProgramParameter *_vita2d_textureTintColorParam = NULL;
 SceGxmVertexProgram * _vita2d_selectedTexVertexProgram = NULL;
 SceGxmFragmentProgram * _vita2d_selectedTexFragmentProgram = NULL;
 SceGxmProgramParameter *_vita2d_selectedTexWvpParam = NULL;
-SceGxmProgramParameter *_vita2d_selectedTexSizeParam = NULL;
-SceGxmProgramParameter *_vita2d_selectedTexSizeFParam = NULL;
+SceGxmProgramParameter *_vita2d_selectedVertexInput = NULL;
+SceGxmProgramParameter *_vita2d_selectedFragmentInput = NULL;
 
 // Temporary memory pool
 static void *pool_addr = NULL;
@@ -398,8 +398,8 @@ int vita2d_init_advanced(unsigned int temp_pool_size)
 		.alphaFunc = SCE_GXM_BLEND_FUNC_ADD,
 		.colorSrc  = SCE_GXM_BLEND_FACTOR_SRC_ALPHA,
 		.colorDst  = SCE_GXM_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA,
-		.alphaSrc  = SCE_GXM_BLEND_FACTOR_ONE,
-		.alphaDst  = SCE_GXM_BLEND_FACTOR_ZERO,
+		.alphaSrc  = SCE_GXM_BLEND_FACTOR_SRC_ALPHA,
+		.alphaDst  = SCE_GXM_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA,
 		.colorMask = SCE_GXM_COLOR_MASK_ALL
 	};
 
@@ -528,11 +528,11 @@ int vita2d_init_advanced(unsigned int temp_pool_size)
 	textureVertexAttributes[0].streamIndex = 0;
 	textureVertexAttributes[0].offset = 0;
 	textureVertexAttributes[0].format = SCE_GXM_ATTRIBUTE_FORMAT_F32;
-	textureVertexAttributes[0].componentCount = 3; // (x, y, z)
+	textureVertexAttributes[0].componentCount = 4; // (x, y, z, w)
 	textureVertexAttributes[0].regIndex = sceGxmProgramParameterGetResourceIndex(paramTexturePositionAttribute);
 	/* u,v: 2 floats 32 bits */
 	textureVertexAttributes[1].streamIndex = 0;
-	textureVertexAttributes[1].offset = 12; // (x, y, z) * 4 = 12 bytes
+	textureVertexAttributes[1].offset = 16; // (x, y, z, w) * 4 = 16 bytes
 	textureVertexAttributes[1].format = SCE_GXM_ATTRIBUTE_FORMAT_F32;
 	textureVertexAttributes[1].componentCount = 2; // (u, v)
 	textureVertexAttributes[1].regIndex = sceGxmProgramParameterGetResourceIndex(paramTextureTexcoordAttribute);
@@ -872,11 +872,11 @@ vita2d_shader *vita2d_create_shader(const SceGxmProgram* vertexProgramGxp, const
 	textureVertexAttributes[0].streamIndex = 0;
 	textureVertexAttributes[0].offset = 0;
 	textureVertexAttributes[0].format = SCE_GXM_ATTRIBUTE_FORMAT_F32;
-	textureVertexAttributes[0].componentCount = 3; // (x, y, z)
+	textureVertexAttributes[0].componentCount = 4; // (x, y, z, w)
 	textureVertexAttributes[0].regIndex = sceGxmProgramParameterGetResourceIndex(shader->paramPositionAttribute);
 	/* u,v: 2 floats 32 bits */
 	textureVertexAttributes[1].streamIndex = 0;
-	textureVertexAttributes[1].offset = 12; // (x, y, z) * 4 = 12 bytes
+	textureVertexAttributes[1].offset = 16; // (x, y, z, w) * 4 = 16 bytes
 	textureVertexAttributes[1].format = SCE_GXM_ATTRIBUTE_FORMAT_F32;
 	textureVertexAttributes[1].componentCount = 2; // (u, v)
 	textureVertexAttributes[1].regIndex = sceGxmProgramParameterGetResourceIndex(shader->paramTexcoordAttribute);
@@ -921,11 +921,24 @@ vita2d_shader *vita2d_create_shader(const SceGxmProgram* vertexProgramGxp, const
 	shader->wvpParam = sceGxmProgramFindParameterByName(vertexProgramGxp, "wvp");
 	DEBUG("texture wvp sceGxmProgramFindParameterByName(): %p\n", shader->wvpParam);
 
-	shader->texSizeParam = sceGxmProgramFindParameterByName(vertexProgramGxp, "texture_size");
-	DEBUG("texture size sceGxmProgramFindParameterByName(): %p\n", shader->texSizeParam);
+	shader->vertexInput.texture_size = sceGxmProgramFindParameterByName(vertexProgramGxp, "IN.texture_size");
+	DEBUG("texture size sceGxmProgramFindParameterByName(): %p\n", shader->vertexInput.texture_size);
 	
-	shader->texSizeFParam = sceGxmProgramFindParameterByName(fragmentProgramGxp, "texture_size");
-	DEBUG("texture size sceGxmProgramFindParameterByName(): %p\n", shader->texSizeFParam);
+	shader->vertexInput.output_size = sceGxmProgramFindParameterByName(vertexProgramGxp, "IN.output_size");
+	DEBUG("texture size sceGxmProgramFindParameterByName(): %p\n", shader->vertexInput.output_size);
+	
+	shader->vertexInput.video_size = sceGxmProgramFindParameterByName(vertexProgramGxp, "IN.video_size");
+	DEBUG("texture size sceGxmProgramFindParameterByName(): %p\n", shader->vertexInput.video_size);
+
+	shader->fragmentInput.texture_size = sceGxmProgramFindParameterByName(fragmentProgramGxp, "IN.texture_size");
+	DEBUG("texture size sceGxmProgramFindParameterByName(): %p\n", shader->fragmentInput.texture_size);
+	
+	shader->fragmentInput.output_size = sceGxmProgramFindParameterByName(fragmentProgramGxp, "IN.output_size");
+	DEBUG("texture size sceGxmProgramFindParameterByName(): %p\n", shader->fragmentInput.output_size);
+	
+	shader->fragmentInput.video_size = sceGxmProgramFindParameterByName(fragmentProgramGxp, "IN.video_size");
+	DEBUG("texture size sceGxmProgramFindParameterByName(): %p\n", shader->fragmentInput.video_size);
+	
 	return shader;
 }
 

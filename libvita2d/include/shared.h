@@ -16,7 +16,7 @@ extern SceGxmProgramParameter *_vita2d_textureTintColorParam;
 extern SceGxmVertexProgram * _vita2d_selectedTexVertexProgram;
 extern SceGxmFragmentProgram * _vita2d_selectedTexFragmentProgram;
 extern SceGxmProgramParameter *_vita2d_selectedTexWvpParam;
-extern SceGxmProgramParameter *_vita2d_selectedTexSizeParam;
-extern SceGxmProgramParameter *_vita2d_selectedTexSizeFParam;
+extern vita2d_shader_input *_vita2d_selectedVertexInput;
+extern vita2d_shader_input *_vita2d_selectedFragmentInput;
 
 #endif

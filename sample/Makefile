@@ -1,6 +1,6 @@
 TITLE_ID = VITA2DTST
 TARGET   = vita2dsample
-OBJS     = main.o image.o
+OBJS     = main.o image.o psp.o zelda.o
 
 LIBS = -lvita2d -lSceKernel_stub -lSceDisplay_stub -lSceGxm_stub \
 	-lSceSysmodule_stub -lSceCtrl_stub -lScePgf_stub \
@@ -8,7 +8,7 @@ LIBS = -lvita2d -lSceKernel_stub -lSceDisplay_stub -lSceGxm_stub \
 
 PREFIX  = arm-vita-eabi
 CC      = $(PREFIX)-gcc
-CFLAGS  = -Wl,-q -Wall -O3 -L.
+CFLAGS  = -Wl,-q -Wall -Og -g -L.
 ASFLAGS = $(CFLAGS)
 
 all: $(TARGET).vpk

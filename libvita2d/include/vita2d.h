@@ -28,6 +28,7 @@ typedef struct vita2d_texture_vertex {
 	float x;
 	float y;
 	float z;
+	float w;
 	float u;
 	float v;
 } vita2d_texture_vertex;
@@ -42,6 +43,15 @@ typedef struct vita2d_texture {
 	SceUID depth_UID;
 } vita2d_texture;
 
+typedef struct vita2d_shader_input{
+	SceGxmProgramParameter * video_size;
+	SceGxmProgramParameter * texture_size;
+	SceGxmProgramParameter * output_size;
+	SceGxmProgramParameter * frame_count;
+	SceGxmProgramParameter * frame_direction;
+	SceGxmProgramParameter * frame_rotation;
+} vita2d_shader_input;
+
 typedef struct vita2d_shader {
   SceGxmShaderPatcherId vertexProgramId;
   SceGxmShaderPatcherId fragmentProgramId;
@@ -50,8 +60,8 @@ typedef struct vita2d_shader {
   SceGxmProgramParameter * paramPositionAttribute;
   SceGxmProgramParameter * paramTexcoordAttribute;
   SceGxmProgramParameter * wvpParam;
-	SceGxmProgramParameter * texSizeParam;
-	SceGxmProgramParameter * texSizeFParam;
+	vita2d_shader_input	vertexInput;
+	vita2d_shader_input fragmentInput;
 } vita2d_shader;
 
 typedef struct vita2d_system_pgf_config {
@@ -167,8 +177,8 @@ int vita2d_pgf_text_height(vita2d_pgf *font, float scale, const char *text);
 vita2d_shader *vita2d_create_shader(const SceGxmProgram* vertexProgramGxp, const SceGxmProgram* fragmentProgramGxp);
 void vita2d_texture_set_program(SceGxmVertexProgram *vertexProgram, SceGxmFragmentProgram *fragmentProgram);
 void vita2d_texture_set_wvp(SceGxmProgramParameter *wvpParam);
-void vita2d_texture_set_texSize(SceGxmProgramParameter *texParam);
-void vita2d_texture_set_texSizeF(SceGxmProgramParameter *texParam);
+void vita2d_texture_set_vertexInput(vita2d_shader_input *input);
+void vita2d_texture_set_fragmentInput(vita2d_shader_input *input);
 void vita2d_free_shader(vita2d_shader *shader);
 
 #ifdef __cplusplus
