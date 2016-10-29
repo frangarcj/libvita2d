@@ -28,7 +28,8 @@
 #include "includes/advanced_aa_f.h"
 #include "includes/scale2x_f.h"
 #include "includes/scale2x_v.h"
-
+#include "includes/sharp_bilinear_f.h"
+#include "includes/sharp_bilinear_v.h"
 
 /*
  * Symbol of the image.png file
@@ -46,14 +47,16 @@ int main()
 
 
 	float rad = 0.0f;
+	int selected = 0;
 
 	vita2d_init();
 
-	//vita2d_shader* lcd3x_shader = vita2d_create_shader((SceGxmProgram*) lcd3x_v, (SceGxmProgram*) lcd3x_f);
+	vita2d_shader* lcd3x_shader = vita2d_create_shader((SceGxmProgram*) lcd3x_v, (SceGxmProgram*) lcd3x_f);
 	vita2d_shader* bicubic_shader = vita2d_create_shader((SceGxmProgram*) opaque_v, (SceGxmProgram*) texture_f);
 	//vita2d_shader* xbr = vita2d_create_shader((SceGxmProgram*) xbr_2x_v, (SceGxmProgram*) xbr_2x_f);
 	//vita2d_shader* xbr_fast = vita2d_create_shader((SceGxmProgram*) xbr_2x_fast_v, (SceGxmProgram*) xbr_2x_fast_f);
 	vita2d_shader* gtu = vita2d_create_shader((SceGxmProgram*) scale2x_v, (SceGxmProgram*) scale2x_f);
+	vita2d_shader* sharp = vita2d_create_shader((SceGxmProgram*) sharp_bilinear_v, (SceGxmProgram*) sharp_bilinear_f);
 
 
 
@@ -75,42 +78,40 @@ int main()
 	while (1) {
 		sceCtrlPeekBufferPositive(0, &pad, 1);
 
-		/*if (pad.buttons & SCE_CTRL_START){
-			vita2d_texture_set_program(lcd3x_shader->vertexProgram, lcd3x_shader->fragmentProgram);
-			vita2d_texture_set_wvp(lcd3x_shader->wvpParam);
-			vita2d_texture_set_texSize(lcd3x_shader->texSizeParam);
-			vita2d_texture_set_texSizeF(NULL);
+		if (pad.buttons & SCE_CTRL_START){
+			vita2d_texture_set_filters(image, SCE_GXM_TEXTURE_FILTER_POINT,SCE_GXM_TEXTURE_FILTER_POINT);
 		} else if(pad.buttons & SCE_CTRL_SQUARE){
-			vita2d_texture_set_program(bicubic_shader->vertexProgram, bicubic_shader->fragmentProgram);
-			vita2d_texture_set_wvp(bicubic_shader->wvpParam);
-			vita2d_texture_set_texSize(bicubic_shader->texSizeParam);
-			vita2d_texture_set_texSizeF(NULL);
+			vita2d_texture_set_filters(image, SCE_GXM_TEXTURE_FILTER_LINEAR,SCE_GXM_TEXTURE_FILTER_LINEAR);
 		} else if(pad.buttons & SCE_CTRL_CIRCLE){
-			vita2d_texture_set_program(xbr->vertexProgram, xbr->fragmentProgram);
-			vita2d_texture_set_wvp(xbr->wvpParam);
-			vita2d_texture_set_texSize(xbr->texSizeParam);
-			vita2d_texture_set_texSizeF(xbr->texSizeFParam);
+			selected = 2;
+
 		} else if(pad.buttons & SCE_CTRL_TRIANGLE){
-			vita2d_texture_set_program(xbr_fast->vertexProgram, xbr_fast->fragmentProgram);
-			vita2d_texture_set_wvp(xbr_fast->wvpParam);
-			vita2d_texture_set_texSize(xbr_fast->texSizeParam);
-			vita2d_texture_set_texSizeF(xbr_fast->texSizeFParam);
+			selected = 0;
 		}else if(pad.buttons & SCE_CTRL_CROSS){
-			vita2d_texture_set_program(gtu->vertexProgram, gtu->fragmentProgram);
-			vita2d_texture_set_wvp(gtu->wvpParam);
-			vita2d_texture_set_texSize(gtu->texSizeParam);
-			vita2d_texture_set_texSizeF(gtu->texSizeFParam);
-		} else */if(pad.buttons & SCE_CTRL_SELECT){
+			selected = 1;
+		} else if(pad.buttons & SCE_CTRL_SELECT){
 			abort();
 			break;
 		}
-
+		vita2d_shader* shader = NULL;
+		
+		switch (selected) {
+			case 0:
+				shader = bicubic_shader;
+				break;
+			case 1:
+				shader = lcd3x_shader;
+				break;
+			case 2:
+				shader = sharp;
+				break;
+		}
 
 		vita2d_start_drawing_advanced(fbo, VITA_2D_RESET_POOL | VITA_2D_SCENE_FRAGMENT_SET_DEPENDENCY);
-		vita2d_texture_set_program(gtu->vertexProgram, gtu->fragmentProgram);
-		vita2d_texture_set_wvp(gtu->wvpParam);
-		vita2d_texture_set_vertexInput(&gtu->vertexInput);
-		vita2d_texture_set_fragmentInput(&gtu->fragmentInput);
+		vita2d_texture_set_program(shader->vertexProgram, shader->fragmentProgram);
+		vita2d_texture_set_wvp(shader->wvpParam);
+		vita2d_texture_set_vertexInput(&shader->vertexInput);
+		vita2d_texture_set_fragmentInput(&shader->fragmentInput);
 		vita2d_draw_texture_scale(image, 0, 0, 2, 2);
 
 		vita2d_end_drawing();

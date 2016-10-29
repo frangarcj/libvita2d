@@ -297,8 +297,8 @@ static inline void set_texture_wvp_uniform(const vita2d_texture *texture)
 			float *output_size = vita2d_pool_memalign(
 				2 * sizeof(float), // RGBA
 				sizeof(float));
-			output_size[0]=vita2d_texture_get_width(texture);
-			output_size[1]=vita2d_texture_get_height(texture);
+			output_size[0]=vita2d_texture_get_width(texture)*2;
+			output_size[1]=vita2d_texture_get_height(texture)*2;
 			sceGxmReserveVertexDefaultUniformBuffer(_vita2d_context, &vertex_tex_buffer);
 			sceGxmSetUniformDataF(vertex_tex_buffer, _vita2d_selectedVertexInput->output_size, 0, 2, output_size);
 		
@@ -340,8 +340,8 @@ static inline void set_texture_wvp_uniform(const vita2d_texture *texture)
 			float *output_size = vita2d_pool_memalign(
 				2 * sizeof(float), // RGBA
 				sizeof(float));
-			output_size[0]=vita2d_texture_get_width(texture);
-			output_size[1]=vita2d_texture_get_height(texture);
+			output_size[0]=vita2d_texture_get_width(texture)*2;
+			output_size[1]=vita2d_texture_get_height(texture)*2;
 			sceGxmReserveFragmentDefaultUniformBuffer(_vita2d_context, &fragment_tex_buffer);
 			sceGxmSetUniformDataF(fragment_tex_buffer, _vita2d_selectedFragmentInput->output_size, 0, 2, output_size);
 		
