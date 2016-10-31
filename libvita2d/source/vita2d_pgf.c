@@ -183,9 +183,10 @@ void vita2d_free_pgf(vita2d_pgf *font)
 	if (font) {
 		vita2d_pgf_font_handle *tmp = font->font_handle_list;
 		while (tmp) {
+			vita2d_pgf_font_handle *aux = tmp;
 			sceFontClose(tmp->font_handle);
-			free(tmp);
 			tmp = tmp->next;
+			free(aux);
 		}
 		sceFontDoneLib(font->lib_handle);
 		texture_atlas_free(font->atlas);
