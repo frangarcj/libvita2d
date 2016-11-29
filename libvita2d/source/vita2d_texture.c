@@ -579,6 +579,32 @@ static inline void draw_texture_scale_generic(const vita2d_texture *texture, flo
 	indices[2] = 2;
 	indices[3] = 3;
 
+	if(_vita2d_selectedVertexInput && _vita2d_selectedVertexInput->output_size>0){
+		
+		void *vertex_tex_buffer;
+		float *output_size = vita2d_pool_memalign(
+			2 * sizeof(float), // RGBA
+			sizeof(float));
+		output_size[0]=w;
+		output_size[1]=h;
+		sceGxmReserveVertexDefaultUniformBuffer(_vita2d_context, &vertex_tex_buffer);
+		sceGxmSetUniformDataF(vertex_tex_buffer, _vita2d_selectedVertexInput->output_size, 0, 2, output_size);
+	
+	}
+	
+	if(_vita2d_selectedFragmentInput && _vita2d_selectedFragmentInput->output_size>0){
+		
+		void *fragment_tex_buffer;
+		float *output_size = vita2d_pool_memalign(
+			2 * sizeof(float), // RGBA
+			sizeof(float));
+		output_size[0]=w;
+		output_size[1]=h;
+		sceGxmReserveFragmentDefaultUniformBuffer(_vita2d_context, &fragment_tex_buffer);
+		sceGxmSetUniformDataF(fragment_tex_buffer, _vita2d_selectedFragmentInput->output_size, 0, 2, output_size);
+	
+	}
+
 	// Set the texture to the TEXUNIT0
 	sceGxmSetFragmentTexture(_vita2d_context, 0, &texture->gxm_tex);
 
@@ -652,6 +678,32 @@ static inline void draw_texture_part_generic(const vita2d_texture *texture, floa
 	indices[1] = 1;
 	indices[2] = 2;
 	indices[3] = 3;
+	
+	if(_vita2d_selectedVertexInput && _vita2d_selectedVertexInput->output_size>0){
+		
+		void *vertex_tex_buffer;
+		float *output_size = vita2d_pool_memalign(
+			2 * sizeof(float), // RGBA
+			sizeof(float));
+		output_size[0]=tex_w;
+		output_size[1]=tex_h;
+		sceGxmReserveVertexDefaultUniformBuffer(_vita2d_context, &vertex_tex_buffer);
+		sceGxmSetUniformDataF(vertex_tex_buffer, _vita2d_selectedVertexInput->output_size, 0, 2, output_size);
+	
+	}
+	
+	if(_vita2d_selectedFragmentInput && _vita2d_selectedFragmentInput->output_size>0){
+		
+		void *fragment_tex_buffer;
+		float *output_size = vita2d_pool_memalign(
+			2 * sizeof(float), // RGBA
+			sizeof(float));
+		output_size[0]=tex_w;
+		output_size[1]=tex_h;
+		sceGxmReserveFragmentDefaultUniformBuffer(_vita2d_context, &fragment_tex_buffer);
+		sceGxmSetUniformDataF(fragment_tex_buffer, _vita2d_selectedFragmentInput->output_size, 0, 2, output_size);
+	
+	}
 
 	// Set the texture to the TEXUNIT0
 	sceGxmSetFragmentTexture(_vita2d_context, 0, &texture->gxm_tex);
@@ -728,6 +780,32 @@ static inline void draw_texture_part_scale_generic(const vita2d_texture *texture
 	indices[1] = 1;
 	indices[2] = 2;
 	indices[3] = 3;
+	
+	if(_vita2d_selectedVertexInput && _vita2d_selectedVertexInput->output_size>0){
+		
+		void *vertex_tex_buffer;
+		float *output_size = vita2d_pool_memalign(
+			2 * sizeof(float), // RGBA
+			sizeof(float));
+		output_size[0]=tex_w;
+		output_size[1]=tex_h;
+		sceGxmReserveVertexDefaultUniformBuffer(_vita2d_context, &vertex_tex_buffer);
+		sceGxmSetUniformDataF(vertex_tex_buffer, _vita2d_selectedVertexInput->output_size, 0, 2, output_size);
+	
+	}
+	
+	if(_vita2d_selectedFragmentInput && _vita2d_selectedFragmentInput->output_size>0){
+		
+		void *fragment_tex_buffer;
+		float *output_size = vita2d_pool_memalign(
+			2 * sizeof(float), // RGBA
+			sizeof(float));
+		output_size[0]=tex_w;
+		output_size[1]=tex_h;
+		sceGxmReserveFragmentDefaultUniformBuffer(_vita2d_context, &fragment_tex_buffer);
+		sceGxmSetUniformDataF(fragment_tex_buffer, _vita2d_selectedFragmentInput->output_size, 0, 2, output_size);
+	
+	}
 
 	// Set the texture to the TEXUNIT0
 	sceGxmSetFragmentTexture(_vita2d_context, 0, &texture->gxm_tex);
@@ -808,6 +886,32 @@ static inline void draw_texture_scale_rotate_hotspot_generic(const vita2d_textur
 	indices[1] = 1;
 	indices[2] = 2;
 	indices[3] = 3;
+	
+	if(_vita2d_selectedVertexInput && _vita2d_selectedVertexInput->output_size>0){
+		
+		void *vertex_tex_buffer;
+		float *output_size = vita2d_pool_memalign(
+			2 * sizeof(float), // RGBA
+			sizeof(float));
+		output_size[0]=w;
+		output_size[1]=h;
+		sceGxmReserveVertexDefaultUniformBuffer(_vita2d_context, &vertex_tex_buffer);
+		sceGxmSetUniformDataF(vertex_tex_buffer, _vita2d_selectedVertexInput->output_size, 0, 2, output_size);
+	
+	}
+	
+	if(_vita2d_selectedFragmentInput && _vita2d_selectedFragmentInput->output_size>0){
+		
+		void *fragment_tex_buffer;
+		float *output_size = vita2d_pool_memalign(
+			2 * sizeof(float), // RGBA
+			sizeof(float));
+		output_size[0]=w;
+		output_size[1]=h;
+		sceGxmReserveFragmentDefaultUniformBuffer(_vita2d_context, &fragment_tex_buffer);
+		sceGxmSetUniformDataF(fragment_tex_buffer, _vita2d_selectedFragmentInput->output_size, 0, 2, output_size);
+	
+	}
 
 	// Set the texture to the TEXUNIT0
 	sceGxmSetFragmentTexture(_vita2d_context, 0, &texture->gxm_tex);
@@ -911,6 +1015,32 @@ static inline void draw_texture_part_scale_rotate_generic(const vita2d_texture *
 	indices[1] = 1;
 	indices[2] = 2;
 	indices[3] = 3;
+	
+	if(_vita2d_selectedVertexInput && _vita2d_selectedVertexInput->output_size>0){
+		
+		void *vertex_tex_buffer;
+		float *output_size = vita2d_pool_memalign(
+			2 * sizeof(float), // RGBA
+			sizeof(float));
+		output_size[0]=w_half * 2;
+		output_size[1]=h_half * 2;
+		sceGxmReserveVertexDefaultUniformBuffer(_vita2d_context, &vertex_tex_buffer);
+		sceGxmSetUniformDataF(vertex_tex_buffer, _vita2d_selectedVertexInput->output_size, 0, 2, output_size);
+	
+	}
+	
+	if(_vita2d_selectedFragmentInput && _vita2d_selectedFragmentInput->output_size>0){
+		
+		void *fragment_tex_buffer;
+		float *output_size = vita2d_pool_memalign(
+			2 * sizeof(float), // RGBA
+			sizeof(float));
+		output_size[0]=w_half * 2;
+		output_size[1]=h_half * 2;
+		sceGxmReserveFragmentDefaultUniformBuffer(_vita2d_context, &fragment_tex_buffer);
+		sceGxmSetUniformDataF(fragment_tex_buffer, _vita2d_selectedFragmentInput->output_size, 0, 2, output_size);
+	
+	}
 
 	// Set the texture to the TEXUNIT0
 	sceGxmSetFragmentTexture(_vita2d_context, 0, &texture->gxm_tex);

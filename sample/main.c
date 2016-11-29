@@ -30,6 +30,11 @@
 #include "includes/scale2x_v.h"
 #include "includes/sharp_bilinear_f.h"
 #include "includes/sharp_bilinear_v.h"
+#include "includes/xbr_2x_noblend_f.h"
+#include "includes/xbr_2x_noblend_v.h"
+#include "includes/fxaa_v.h"
+#include "includes/fxaa_f.h"
+#include "includes/crt_easymode_f.h"
 
 /*
  * Symbol of the image.png file
@@ -56,7 +61,7 @@ int main()
 	//vita2d_shader* xbr = vita2d_create_shader((SceGxmProgram*) xbr_2x_v, (SceGxmProgram*) xbr_2x_f);
 	//vita2d_shader* xbr_fast = vita2d_create_shader((SceGxmProgram*) xbr_2x_fast_v, (SceGxmProgram*) xbr_2x_fast_f);
 	vita2d_shader* gtu = vita2d_create_shader((SceGxmProgram*) scale2x_v, (SceGxmProgram*) scale2x_f);
-	vita2d_shader* sharp = vita2d_create_shader((SceGxmProgram*) sharp_bilinear_v, (SceGxmProgram*) sharp_bilinear_f);
+	vita2d_shader* sharp = vita2d_create_shader((SceGxmProgram*) opaque_v, (SceGxmProgram*) crt_easymode_f);
 
 
 
